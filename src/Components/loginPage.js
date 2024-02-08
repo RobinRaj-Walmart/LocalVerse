@@ -13,6 +13,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import WalmartLogo from './walmartLogo.svg'; // Import the logo
+import { useNavigate } from 'react-router-dom';
+
 
 function Copyright(props) {
   return (
@@ -32,15 +34,17 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignIn() {
+  const navigate = useNavigate();
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    
     console.log({
       email: data.get('email'),
       password: data.get('password'),
     });
+    navigate('/home-page');
   };
-
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
@@ -53,37 +57,21 @@ export default function SignIn() {
             alignItems: 'center',
           }}
         >
-          {/* <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon /> */}
-            <img
-              style={{ height: '32px', width: 'auto' }}
-              src={WalmartLogo} 
-              alt="Walmart-logo"
-            />
-          {/* </Avatar> */}
-          {/* <Typography component="h1" variant="h5">
-            Sign in
-          </Typography> */}
+          <img
+            style={{ height: '50px', width: 'auto' }}
+            src={WalmartLogo} 
+            alt="Walmart-logo"
+          />
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="User Id"
               name="email"
               autoComplete="email"
               autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -95,7 +83,7 @@ export default function SignIn() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
+              SSO login
             </Button>
             <Grid container>
               <Grid item xs>
