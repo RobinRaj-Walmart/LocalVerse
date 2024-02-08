@@ -26,6 +26,8 @@ import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import * as XLSX from 'xlsx';
+
 
 
 
@@ -89,9 +91,10 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 const buttonStyle = {
+  position: 'relative', top: '10px',
   padding: '10px 20px',
   border: 'none',
-  backgroundImage: 'linear-gradient(to right, #6a11cb 0%, #2575fc 100%)',
+  backgroundColor: '#1975CF',
   color: 'white',
   textTransform: 'uppercase',
   fontWeight: 'bold',
@@ -100,10 +103,31 @@ const buttonStyle = {
   outline: 'none',
   boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
   transform: 'scale(0.9)',
-  transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+};
+
+const buttonStyle2 = {
+  padding: '10px 20px',
+  border: 'none',
+  backgroundColor: '#1975CF',
+  color: 'white',
+  textTransform: 'uppercase',
+  fontWeight: 'bold',
+  borderRadius: '5px',
+  cursor: 'pointer',
+  outline: 'none',
+  boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+  transform: 'scale(0.9)',
+  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+  position: 'relative', left: '20px'
 };
 
 const hoverStyle = {
+  transform: 'scale(2)',
+  boxShadow: '0 6px 8px rgba(0,0,0,0.15)'
+};
+
+const hoverStyle2 = {
   transform: 'scale(1.1)',
   boxShadow: '0 6px 8px rgba(0,0,0,0.15)'
 };
@@ -154,11 +178,11 @@ export default function HomePage() {
   // Function to trigger the file download
   const handleDownloadPdf = () => {
     // Assuming you have a URL to the PDF you want users to be able to download
-    const pdfUrl = "URL_TO_YOUR_DOWNLOADABLE_PDF";
+    const ExcelUrl = "../SampleExcel.xlsx";
     // Create a new link element, set its href, and trigger the download
     const link = document.createElement('a');
-    link.href = pdfUrl;
-    link.setAttribute('download', 'OptionalPdf.pdf'); // Define the download file name
+    link.href = ExcelUrl;
+    link.setAttribute('download', 'SampleFile.xlsx'); // Define the download file name
     document.body.appendChild(link);
     link.click();
     link.parentNode.removeChild(link);
@@ -179,6 +203,28 @@ export default function HomePage() {
     width: '100vw',
     height: '100vh'
   }
+
+  function onFileSelect(event) {
+    setUploadedPdf(event.target.files[0]);
+    console.log("on file select function was called");
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const bufferArray = e.target.result;
+      const workbook = XLSX.read(bufferArray, {type: 'buffer'});
+
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+      console.log(jsonData);
+    }
+
+    reader.readAsArrayBuffer(file);
+  }
+  
+
   return (
     <div style={styles}>
       <ThemeProvider theme={defaultTheme}>
@@ -214,19 +260,28 @@ export default function HomePage() {
             <h2>Bulk Upload</h2>
             <h3>Select Excel and upload</h3>
           </div>
-          <div style={{position: 'relative', top: '50px'}}>
-            <input style={{display:'none'}} type="file" accept="application/pdf" onChange={handleFileChange} id='excel-file' />
-            <label style={buttonStyle} htmlFor="excel-file"
-            onMouseOver={(e) => Object.assign(e.target.style, hoverStyle)} 
-            onMouseOut={(e) => Object.assign(e.target.style, buttonStyle)}
-            >Choose file</label>
-            {uploadedPdf && <p>File uploaded: {uploadedPdf.name}</p>}
-            <button style={buttonStyle}
-            style={{position: 'relative', left: '20px'}}
+          <div style={{display: 'flex',position: 'relative', top: '50px'}}>
+            <div>
+              <input style={{display:'none'}}
+              onMouseOver={(e) => Object.assign(e.target.style, hoverStyle)} 
+              onMouseOut={(e) => Object.assign(e.target.style, buttonStyle)}
+              type="file" 
+              onChange={onFileSelect}
+              accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              id='excel-file' />
+              <label
+              style={buttonStyle}
+              
+              htmlFor="excel-file"
+              >File upload</label>
+              {uploadedPdf && <p style={{fontSize: '15px', position: 'relative', top: '10px'}}>File uploaded: {uploadedPdf.name}</p>}
+            </div>
+            <button
+            style={buttonStyle2}
             onClick={handleDownloadPdf}
-            onMouseOver={(e) => Object.assign(e.target.style, hoverStyle)} 
-            onMouseOut={(e) => Object.assign(e.target.style, buttonStyle)}
-            >Download Optional PDF</button>
+            onMouseOver={(e) => Object.assign(e.target.style, hoverStyle2)} 
+            onMouseOut={(e) => Object.assign(e.target.style, buttonStyle2)}
+            >Sample Excel file</button>
           </div>
         </div>
       </div>}
