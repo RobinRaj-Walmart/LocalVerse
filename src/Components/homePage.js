@@ -20,6 +20,14 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import { mainListItems, secondaryListItems } from './listItems';
 import WalmartLogo from './walmartLogo.svg'; // Import the logo
 import './home.css';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import ListSubheader from '@mui/material/ListSubheader';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+
+
 
 function Copyright(props) {
   return (
@@ -106,10 +114,42 @@ const defaultTheme = createTheme();
 export default function HomePage() {
   const [uploadedPdf, setUploadedPdf] = React.useState(null);
 
+  const [fb, setFb] = React.useState(null);
+
   // Function to handle PDF file selection and set state
   const handleFileChange = (event) => {
     setUploadedPdf(event.target.files[0]);
   };
+  function flagBulk(){
+    console.log("button was clicked");
+    setFb(1);
+  }
+
+  const mainListItems = (
+    <React.Fragment>
+      <ListSubheader component="div" inset>
+        Walmart Developer
+      </ListSubheader>
+      <ListItemButton onClick={flagBulk}>
+        <ListItemIcon>
+          <DashboardIcon />
+        </ListItemIcon>
+        <ListItemText primary="Bulk Upload" />
+      </ListItemButton>
+      <ListItemButton>
+        <ListItemIcon>
+          <ShoppingCartIcon />
+        </ListItemIcon>
+        <ListItemText primary="Single Upload" />
+      </ListItemButton>
+      <ListItemButton>
+        <ListItemIcon>
+          <ShoppingCartIcon />
+        </ListItemIcon>
+        <ListItemText primary="View Strings" />
+      </ListItemButton>
+    </React.Fragment>
+  );
 
   // Function to trigger the file download
   const handleDownloadPdf = () => {
@@ -163,7 +203,7 @@ export default function HomePage() {
             </List>
           </Drawer>
       </ThemeProvider>
-      <div style={rightSide}>
+      {fb && <div style={rightSide}>
         <div style={{position: 'relative', right:'100px', top: '100px'}}>
           <div className="classyContainer">
             <img
@@ -189,7 +229,7 @@ export default function HomePage() {
             >Download Optional PDF</button>
           </div>
         </div>
-      </div>
+      </div>}
     </div>
   );
 }
