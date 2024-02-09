@@ -41,6 +41,33 @@ function collectData() {
     alert("Your data has been sent to a linguist for approval. It will soon be available for use");
 }
 
+const boxStyle = {
+    padding: '5px',
+    borderRadius: '10px',
+    border: '1px solid #ccc',
+}
+
+const buttonStyle = {
+    position: 'relative', top: '10px',
+    padding: '10px 20px',
+    border: 'none',
+    backgroundColor: '#1975CF',
+    color: 'white',
+    textTransform: 'uppercase',
+    fontWeight: 'bold',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    outline: 'none',
+    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+    transform: 'scale(0.9)',
+    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+};
+
+const hoverStyle = {
+    transform: 'scale(1.2)',
+    boxShadow: '0 6px 8px rgba(0,0,0,0.15)'
+};
+
 export default function SingleUpload() {
     return (
         <div style={SuStyle}>
@@ -58,18 +85,20 @@ export default function SingleUpload() {
             <h2>Enter your string with details</h2>
             <form>
                 <label htmlFor="Team Name">Enter Team Name: </label>
-                <input type="text" id="Team Name" />
+                <input style={boxStyle} type="text" id="Team Name" />
             </form>
             <form>
                 <label htmlFor="Feature Name">Enter Feature Name: </label>
-                <input type="text" id="Feature Name" />
+                <input style={boxStyle} type="text" id="Feature Name" />
             </form>
             <form>
                 <label htmlFor="String">Enter String: </label>
-                <input type="text" id="String" />
+                <input style={boxStyle} type="text" id="String" />
             </form>
-            <button type="submit" onClick={collectData}>Submit</button>
-            
+            <button style={buttonStyle}
+            onMouseOver={(e) => Object.assign(e.target.style, hoverStyle)} 
+            onMouseOut={(e) => Object.assign(e.target.style, buttonStyle)}
+             type="submit" onClick={collectData}>Submit</button>
         </div>
     )
 }
