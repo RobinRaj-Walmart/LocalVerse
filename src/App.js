@@ -9,11 +9,6 @@ function App() {
       <Routes>
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/home-page" element={<HomePage />} />
-        {/* You can add a redirect for the root path to automatically go to either sign-in or home-page */}
-        <Route
-          path="/"
-          element={<SignIn />}
-        />
       </Routes>
     </Router>
   );

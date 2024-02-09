@@ -27,7 +27,7 @@ import ListSubheader from '@mui/material/ListSubheader';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import * as XLSX from 'xlsx';
-
+import SingleUpload from './singleUpload';
 
 
 
@@ -143,6 +143,7 @@ export default function HomePage() {
     }
   }, [uploadedPdf]);
   const [fb, setFb] = React.useState(null);
+  const [su, setSu] = React.useState(null);
 
   // Function to handle PDF file selection and set state
   const handleFileChange = (event) => {
@@ -151,6 +152,12 @@ export default function HomePage() {
   function flagBulk(){
     console.log("button was clicked");
     setFb(1);
+    setSu(null);
+  }
+  function flagSingle(){
+    console.log("button was clicked");
+    setFb(null);
+    setSu(1);
   }
 
   const mainListItems = (
@@ -164,7 +171,7 @@ export default function HomePage() {
         </ListItemIcon>
         <ListItemText primary="Bulk Upload" />
       </ListItemButton>
-      <ListItemButton>
+      <ListItemButton onClick={flagSingle}>
         <ListItemIcon>
           <ShoppingCartIcon />
         </ListItemIcon>
@@ -332,6 +339,9 @@ export default function HomePage() {
             >Sample Excel file</button>
           </div>
         </div>
+      </div>}
+      {su && <div>
+        <SingleUpload />
       </div>}
     </div>
   );
