@@ -137,7 +137,11 @@ const defaultTheme = createTheme();
 
 export default function HomePage() {
   const [uploadedPdf, setUploadedPdf] = React.useState(null);
-
+  React.useEffect(()=>{
+    if(uploadedPdf) {
+      console.log("Thank you. It has been sent for linguist approval.");
+    }
+  }, [uploadedPdf]);
   const [fb, setFb] = React.useState(null);
 
   // Function to handle PDF file selection and set state
@@ -177,12 +181,10 @@ export default function HomePage() {
 
   // Function to trigger the file download
   const handleDownloadPdf = () => {
-    // Assuming you have a URL to the PDF you want users to be able to download
-    const ExcelUrl = "../SampleExcel.xlsx";
-    // Create a new link element, set its href, and trigger the download
+    const ExcelUrl = './SampleExcel.xlsx';
     const link = document.createElement('a');
     link.href = ExcelUrl;
-    link.setAttribute('download', 'SampleFile.xlsx'); // Define the download file name
+    link.setAttribute('download', 'SampleFile.xlsx');
     document.body.appendChild(link);
     link.click();
     link.parentNode.removeChild(link);
@@ -204,8 +206,31 @@ export default function HomePage() {
     height: '100vh'
   }
 
+  function validateHeaders(file) {
+    console.log("Trying to validate the headers");
+    const workbook = XLSX.readFile(file);
+    const sheet_name_list = workbook.SheetNames;
+    const worksheet = workbook.Sheets[sheet_name_list[0]];
+
+    // get the headers (assuming they are in the first row)
+    const headers = XLSX.utils.sheet_to_json(worksheet, {header: 1})[0];
+
+    // define the expected headers
+    const expectedHeaders = ['ID', 'Feature Name', 'Team', 'String'];
+
+    // compare the actual headers with the expected ones
+    for (let i = 0; i < expectedHeaders.length; i++) {
+        if (headers[i] !== expectedHeaders[i]) {
+            alert(`Invalid header in cell ${i + 1}: ${headers[i]}`);
+            return false;
+        }
+    }
+    return true;
+  }
+
   function onFileSelect(event) {
     setUploadedPdf(event.target.files[0]);
+    
     console.log("on file select function was called");
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -218,7 +243,30 @@ export default function HomePage() {
       const worksheet = workbook.Sheets[sheetName];
       const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
-      console.log(jsonData);
+      // console.log(jsonData);
+      let len = jsonData.length;
+      console.log(len);
+      let ele = [];
+      for(let i=0;i<len;i++) {
+        if(jsonData[i]['ID']==undefined || jsonData[i]['Feature Name']==undefined || jsonData[i]['Team']==undefined || jsonData[i]['String']==undefined) {
+          alert("The format is incorrect. Please try again");
+          setUploadedPdf(null);
+          return;
+        }
+        let obj1 = {
+          id: jsonData[i]['ID'],
+          featureName: jsonData[i]['Feature Name'],
+          team: jsonData[i]['Team'],
+          string: jsonData[i]['String']
+        }
+        ele.push(obj1);
+      }
+      console.log(ele);
+      const toSend = {
+        userUploadedDetails: ele,
+        totalCount: len
+      }
+      console.log(toSend);
     }
 
     reader.readAsArrayBuffer(file);
